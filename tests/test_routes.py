@@ -131,4 +131,4 @@ class TestAccountService(TestCase):
         self.assertTrue(response.status_code, status.HTTP_200_OK)
         accounts = response.get_json()
         self.assertTrue(len(accounts), 10)
-
+        

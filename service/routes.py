@@ -72,7 +72,7 @@ def list_accounts():
     
     return make_response(
         jsonify(account_list), status.HTTP_200_OK
-    )
+    ) 
 
 ######################################################################
 # READ AN ACCOUNT
