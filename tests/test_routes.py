@@ -7,6 +7,7 @@ Test cases can be run with the following:
 """
 import os
 import logging
+import random
 from unittest import TestCase
 from tests.factories import AccountFactory
 from service.common import status  # HTTP Status Codes
@@ -126,9 +127,26 @@ class TestAccountService(TestCase):
     # ADD YOUR TEST CASES HERE ...
     def test_list_accounts(self):
         """Should return a list of accounts"""
-        _create_accounts(10)
+        self._create_accounts(10)
         response = self.client.get(BASE_URL)
         self.assertTrue(response.status_code, status.HTTP_200_OK)
         accounts = response.get_json()
         self.assertTrue(len(accounts), 10)
+    
+    def test_load_account(self):
+        """Should return a single account by ID"""
+        account_data = self._create_accounts(1)[0]
+
+        response = self.client.get(
+            f"{BASE_URL}/{account_data.id}",
+            content_type="application/json"
+        )
+        self.assertTrue(response.status_code, status.HTTP_200_OK)
+        account = response.get_json()
+        self.assertEqual(account["name"], account_data.name)
         
+        response = self.client.get(
+            f"{BASE_URL}/2000",
+            content_type="application/json"
+        )
+        self.assertTrue(response.status_code, status.HTTP_404_NOT_FOUND)
