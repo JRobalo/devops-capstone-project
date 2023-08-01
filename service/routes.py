@@ -98,27 +98,33 @@ def get_account(account_id):
 # UPDATE AN EXISTING ACCOUNT
 ######################################################################
 @app.route("/accounts/<int:account_id>", methods=["PUT"])
-def update_account(account_id):
+def update_accounts(account_id):
     """
     Update an Account
-    This endpoint will update an account by ID with put data
+    This endpoint will update an Account based on the posted data
     """
-    app.logger.info(f"Request to update account with ID: {account_id}")
-
+    app.logger.info("Request to update an Account with id: %s", account_id)
     account = Account.find(account_id)
     if not account:
-        return make_response(f"Account with ID {account_id} not found.", status.HTTP_404_NOT_FOUND)
-    
-    account.deserialize(request.get_json)
+        abort(status.HTTP_404_NOT_FOUND, f"Account with id [{account_id}] could not be found.")
+    account.deserialize(request.get_json())
     account.update()
-
-    return make_response(account.serialize(), status.HTTP_200_OK)
+    return account.serialize(), status.HTTP_200_OK
 
 ######################################################################
 # DELETE AN ACCOUNT
 ######################################################################
-
-# ... place you code here to DELETE an account ...
+@app.route("/accounts/<int:account_id>", methods=["DELETE"])
+def delete_accounts(account_id):
+    """
+    Delete an Account
+    This endpoint will delete an Account based on the account_id that is requested
+    """
+    app.logger.info("Request to delete an Account with id: %s", account_id)
+    account = Account.find(account_id)
+    if account:
+        account.delete()
+    return "", status.HTTP_204_NO_CONTENT
 
 
 ######################################################################
